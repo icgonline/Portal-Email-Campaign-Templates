@@ -38,7 +38,12 @@ function jetpack_crm_stats_exporter_get_campaign_data($campaign_id) {
  */
 function jetpack_crm_stats_exporter_get_campaign_stats($campaign_id) {
     global $wpdb;
-    
+
+    $mail_id = jetpack_crm_stats_exporter_get_mail_id($campaign_id);
+    if ($mail_id <= 0) {
+        return array();
+    }
+
     $stats_table = $wpdb->prefix . 'zbs_mail_stats';
     
     // Get stats for this campaign
@@ -47,7 +52,7 @@ function jetpack_crm_stats_exporter_get_campaign_stats($campaign_id) {
             "SELECT * FROM {$stats_table} 
              WHERE zbsmailstat_mailid = %d 
              ORDER BY zbsmailstat_sent ASC",
-            $campaign_id
+            $mail_id
         )
     );
     

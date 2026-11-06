@@ -181,37 +181,11 @@ function jetpack_crm_stats_exporter_format_timestamp($timestamp) {
     
     $timestamp = (int) $timestamp;
     
-    // Get WordPress timezone settings
-    $timezone_string = get_option('timezone_string');
-    
-    if (!empty($timezone_string)) {
-        // Timezone string is set (preferred method)
-        // Use date_i18n which handles timezone_string
-        return date_i18n(
-            get_option('date_format') . ' ' . get_option('time_format'), 
-            $timestamp
-        );
-    } else {
-        // Fall back to GMT offset
-        $gmt_offset = get_option('gmt_offset');
-        
-        if (!empty($gmt_offset)) {
-            // Apply offset in hours * 3600 seconds per hour
-            // This matches how Jetpack CRM does it
-            $offset_seconds = (int) $gmt_offset * 3600;
-            $local_timestamp = $timestamp + $offset_seconds;
-            
-            // Use date_i18n with UTC flag (third param = true) since we already applied offset
-            return date_i18n(
-                get_option('date_format') . ' ' . get_option('time_format'),
-                $local_timestamp,
-                true // Tell date_i18n the timestamp is already in local time
-            );
-        }
+    if (function_exists('zeroBSCRM_locale_utsToDatetimeWP')) {
+        return zeroBSCRM_locale_utsToDatetimeWP($timestamp);
     }
-    
-    // Fallback - no timezone configured, just use date_i18n
-    return date_i18n(
+
+    return wp_date(
         get_option('date_format') . ' ' . get_option('time_format'),
         $timestamp
     );

@@ -22,6 +22,25 @@ jetpack-crm-stats-exporter/
 └── LICENSE                            # GPL-2.0-or-later
 ```
 
+## Export Regression Checks
+
+Run the standalone checks from the repository root with PHP installed:
+
+```sh
+php stats-plugin/tests/export-regression.php
+php stats-plugin/tests/export-regression.php crm
+```
+
+These checks use WordPress and database stubs; no running WordPress site is required.
+They cover CRM formatter delegation, UTC-aware WordPress fallback formatting,
+daylight saving, fractional timezone offsets, absent event dates, CSV output,
+and campaign IDs that differ from their associated mail IDs.
+
+Stat timestamps are UTC Unix seconds. CSV dates use
+`zeroBSCRM_locale_utsToDatetimeWP()` when available to match the CRM display,
+or `wp_date()` otherwise, using the site's date, time, and timezone settings.
+Campaign statistics must be selected using `zbsmailcamp_mailid`, not the campaign ID.
+
 ## Hooks & Filters
 
 The plugin defines no custom hooks or filters currently, but is structured to allow for future extensibility.
